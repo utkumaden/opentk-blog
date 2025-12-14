@@ -49,6 +49,10 @@ on dark or light theme.
     padding-bottom: 4px;
 }
 
+.comment .commentheader .commentgravatar img {
+    border-radius: 50%;
+}
+
 .comment .commentheader a:link {
   text-decoration: none;
 }
