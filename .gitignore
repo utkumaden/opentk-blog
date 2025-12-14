@@ -3,3 +3,6 @@ _site
 .jekyll-cache
 .jekyll-metadata
 vendor
+# Because github tells us to: https://docs.github.com/en/pages/setting-up-a-github-pages-site-with-jekyll/creating-a-github-pages-site-with-jekyll
+# - Noggin_bops 2025-12-14
+Gemfile.lock
