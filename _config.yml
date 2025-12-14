@@ -18,7 +18,7 @@
 # You can create any custom variable you would like, and they will be accessible
 # in the templates via {{ site.myvariable }}.
 
-title: OpenTK blog
+title: Blog
 email: julius_hager@hotmail.com
 description: >- # this means to ignore newlines until "baseurl:"
   A blog about using OpenTK and hopefully mildly interesting development notes from the development of OpenTK.
