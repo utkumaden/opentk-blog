@@ -1,11 +1,12 @@
 .site-header {
-    background-color: #0052cc;
+    background-color: $otk-color;
     border: 0px;
     line-height: 50px;
     min-height: 50px;
     height: 50px;
     border-bottom-style: solid;
     border-bottom-width: 1px;
+    border-bottom-color: darken($otk-color, 10%);
 }
 
 .site-header-logo {
@@ -29,6 +30,16 @@
     font-size: 35px;
 }
 
-.site-nav .nav-item {
-    color: #fff;
+.site-nav {
+    .nav-item {
+        color: $header-text-color;
+    }
+
+    @include media-query($on-medium) {
+        background-color: $header-background-color;
+    }
+}
+
+.menu-icon {
+    color: $header-text-color;
 }

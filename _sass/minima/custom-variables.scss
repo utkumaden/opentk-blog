@@ -1,3 +1,89 @@
-
-
 $content-width: 1170px;
+
+$otk-color: #0052cc;
+
+$lm-header-background-color:              $otk-color;
+$lm-header-text-color:                  #f0f0f0;
+
+$lm-comment-text-color:                 #303030;
+$lm-comment-user-name-color:            #000000;
+$lm-comment-border-color:               #cacaca;
+$lm-comment-background-color:           #fcfcfc;
+$lm-comment-header-gradient-color:      #f0f0f0;
+$lm-comment-header-background:            linear-gradient(to bottom, #f0f0f0, $lm-comment-background-color);
+
+$dm-header-background-color:              $otk-color;
+$dm-header-text-color:                  #D3D3D3;
+
+$dm-comment-text-color:                 #B4B4B4;
+$dm-comment-user-name-color:            #f0f0f0;
+$dm-comment-border-color:               #0052cc7a;
+$dm-comment-background-color:           #181818;
+$dm-comment-header-gradient-color:      #0052cc1a;
+$dm-comment-header-background:          #0052cc1a;
+
+// Mode selection
+// --------------
+
+// Classic skin (always light mode)
+// Assign outside of the if construct to establish global variable scope
+
+$header-background-color: #{$lm-header-background-color};
+$header-text-color: #{$lm-header-text-color};
+
+$comment-text-color: #{$lm-comment-text-color};
+$comment-user-name-color: #{$lm-comment-user-name-color};
+$comment-border-color: #{$lm-comment-border-color};
+$comment-background-color: #{$lm-comment-background-color};
+$comment-header-background: #{$lm-comment-header-gradient-color};
+
+@if $color-scheme-auto {
+    // Auto mode
+
+    :root {
+        --otkblog-header-background-color: #{$lm-header-background-color};
+        --otkblog-header-text-color: #{$lm-header-text-color};
+
+        --otkblog-comment-text-color: #{$lm-comment-text-color};
+        --otkblog-comment-user-name-color: #{$lm-comment-user-name-color};
+        --otkblog-comment-border-color: #{$lm-comment-border-color};
+        --otkblog-comment-background-color: #{$lm-comment-background-color};
+        --otkblog-comment-header-background: #{$lm-comment-header-background};
+    }
+
+    @media (prefers-color-scheme: dark) {
+        :root {
+            --otkblog-header-background-color: #{$dm-header-background-color};
+            --otkblog-header-text-color: #{$dm-header-text-color};
+
+            --otkblog-comment-text-color: #{$dm-comment-text-color};
+            --otkblog-comment-user-name-color: #{$dm-comment-user-name-color};
+            --otkblog-comment-border-color: #{$dm-comment-border-color};
+            --otkblog-comment-background-color: #{$dm-comment-background-color};
+            --otkblog-comment-header-background: #{$dm-comment-header-background};
+        }
+    }
+
+    $header-background-color: var(--otkblog-header-background-color);
+    $header-text-color: var(--otkblog-header-text-color);
+
+    $comment-text-color: var(--otkblog-comment-text-color);
+    $comment-user-name-color: var(--otkblog-comment-user-name-color);
+    $comment-border-color: var(--otkblog-comment-border-color);
+    $comment-background-color: var(--otkblog-comment-background-color);
+    $comment-header-background: var(--otkblog-comment-header-background);
+} @else if $color-scheme-dark {
+    // Dark skin (always dark mode)
+
+    $header-background-color: #{$dm-header-background-color};
+    $header-text-color: #{$dm-header-text-color};
+
+    $comment-text-color: #{$dm-comment-text-color};
+    $comment-user-name-color: #{$dm-comment-user-name-color};
+    $comment-border-color: #{$dm-comment-border-color};
+    $comment-background-color: #{$dm-comment-background-color};
+    $comment-header-background: #{$dm-comment-header-background};
+} @else {
+    // Light mode (always light mode)
+
+}

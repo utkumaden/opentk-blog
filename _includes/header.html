@@ -4,7 +4,12 @@
     {%- assign default_paths = site.pages | map: "path" -%}
     {%- assign page_paths = site.minima.nav_pages | default: default_paths -%}
     {%- assign page_titles = site.pages | map: 'title' | compact %}
-    <a class="site-header-logo" rel="author" href="{{ '/' | relative_url }}"><img src="{{ site.baseurl }}/assets/images/opentk-blog-logo-curves.svg"></img></a>
+    <a class="site-header-logo" rel="author" href="{{ '/' | relative_url }}">
+      <picture>
+        <source srcset="{{ site.baseurl }}/assets/images/opentk-blog-logo-curves-gray.svg" media="(prefers-color-scheme: dark)" />
+        <img src="{{ site.baseurl }}/assets/images/opentk-blog-logo-curves-white.svg" />
+      </picture>
+    </a>
 
     {%- unless page_titles == empty %}
       <nav class="site-nav">

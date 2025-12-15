@@ -5,7 +5,7 @@ on dark or light theme.
 */
 
 .comment {
-    border-color: #cacaca;
+    border-color: $comment-border-color;
     border-style: solid;
     border-width: 1px;
     border-radius: 8px;
@@ -17,11 +17,11 @@ on dark or light theme.
     padding: 0px;
     width: 100%;
 
-    background-color: #fcfcfc;
+    background-color: $comment-background-color;
 }
 
 .comment .commentheader {
-    border-bottom-color: #cacaca;
+    border-bottom-color: $comment-border-color;
     border-bottom-style: solid;
     border-bottom-width: 1px;
     color: black;
@@ -36,7 +36,7 @@ on dark or light theme.
     white-space: nowrap;
     width: 100%;
     
-    background-image: linear-gradient(to bottom, #f0f0f0, #fcfcfc);
+    background: $comment-header-background;
 }
 
 .comment .commentheader .commentgravatar {
@@ -63,7 +63,7 @@ on dark or light theme.
 
 .comment .commentheader .commentuser {
   background-color: transparent;
-  color: black;
+  color: $comment-user-name-color;
   display: inline;
   float: none;
   font-size: 12px;
@@ -82,7 +82,7 @@ on dark or light theme.
 
 .comment .commentheader .commentdate {
   background-color: transparent;
-  color: #777;
+  color: $comment-text-color;
   display: inline;
   float: none;
   font-size: 11px;
@@ -104,7 +104,7 @@ on dark or light theme.
   background-color: transparent;
   background-image: none;
   background-origin: padding-box;
-  color: #333;
+  color: $comment-text-color;
   display: block;
   margin-bottom: 1em;
   margin-left: 1em;
