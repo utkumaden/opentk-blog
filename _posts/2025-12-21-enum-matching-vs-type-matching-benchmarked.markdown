@@ -22,13 +22,12 @@ void OnEventRaised(PalHandle? handle, PlatformEventType type, EventArgs args)
 {
     switch (type)
     {
-        case PlatformEventType.UserMessage:
-            case PlatformEventType.MouseDown:
-            {
-                MouseButtonDownEventArgs down = (MouseButtonDownEventArgs)args;
-                // Mouse handling code...
-            }
-            break;
+        case PlatformEventType.MouseDown:
+        {
+            MouseButtonDownEventArgs down = (MouseButtonDownEventArgs)args;
+            // Mouse handling code...
+        }
+        break;
         // ....
     }
 }
