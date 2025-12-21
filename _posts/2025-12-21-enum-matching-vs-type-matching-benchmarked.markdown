@@ -52,7 +52,7 @@ void OnEventRaised(PalHandle? handle, PlatformEventType type, EventArgs args)
 }
 ```
 
-Although the event message box should ideally never be a bottleneck in regular
+Although window events should ideally never be a bottleneck in regular
 applications, this did raise a question of whichever approach is the fastest. I
 find the results will intrigue you as much as it did me. Whilst the findings
 aren't significant enough to affect our final decision, it might be important
@@ -60,7 +60,7 @@ for someone else in another field or in another application.
 
 ## The Premise
 Imagine a scenario where you are receiving a significant number of events into
-an event queue per second. Unfortunately for our poor programming, it is very
+an event queue per second. Unfortunately for our poor program, it is very
 important that these events be handled as quickly as possible with a minimum
 amount of variance between the time it takes each event be processed. Each event
 has something to identify its type, and must be processed by different code
@@ -143,7 +143,7 @@ people on the server we have come up with the following method:
 workload. In our testing we used a float value to sum.
 
 > **NOTE** <br>
-> I have chosen to make the workload be a member of the child class is to
+> I have chosen to make the workload be a member of the child class to
 > prevent the C# and JIT compiler from doing any sort of optimization feasibly.
 > If it were a member of the parent class, the compiler could just chose to not
 > do any type resolution at all.
@@ -159,17 +159,15 @@ workload. In our testing we used a float value to sum.
     events.
     * The test case exits with the final result printed out to standard output.
 
-With our test case, we have chosen to use 16 unique events. However, feel free
-to extend our example to more event types and share the results with use on your
-own time.
+With our test case, we have chosen to use 16 unique events with approximately
+32 million instances. However, feel free to extend our example to more event
+types and share the results with us on your own time.
 
 ## Testing and Results
 > <pre>
 > BenchmarkDotNet v0.15.8, Linux Fedora Linux 43 (Workstation Edition)
 > AMD Ryzen 7 8700G w/ Radeon 780M Graphics 2.91GHz, 1 CPU, 16 logical and 8 physical cores
-> .NET SDK 10.0.101
 >  [Host]     : .NET 10.0.1 (10.0.1, 10.0.125.57005), X64 RyuJIT x86-64-v4
->  DefaultJob : .NET 10.0.1 (10.0.1, 10.0.125.57005), X64 RyuJIT x86-64-v4
 > </pre>
 >
 > | Method                   | Mean     | Error   | StdDev  | Median   | Ratio | RatioSD | Allocated | Alloc Ratio |
@@ -182,11 +180,6 @@ own time.
 > | MatchOnTypeSealed        | 266.0 ms | 1.24 ms | 1.16 ms | 265.4 ms |  1.06 |    0.03 |     168 B |        1.17 |
 >
 > <pre>
-> // * Hints *
-> Outliers
->  Benchmark.MatchOnEnumVirtual: Default -> 1 outlier  was  removed (467.13 ms)
->
-> // * Legends *
 >   Mean        : Arithmetic mean of all measurements
 >   Error       : Half of 99.9% confidence interval
 >   StdDev      : Standard deviation of all measurements
@@ -212,21 +205,20 @@ with writing an enum as it has very diminishing returns for applications without
 significant performance considerations.
 
 This is very easy to see when you consider the test cases where a virtual member
-is used: when object oriented programming constructs are used, the runtime has
-to either resolve the actual method to run, or resolve the type and then execute
-the concrete method, if it even is concrete to begin with. The key factor to
-keep in mind is how you can help the runtime eliminate which code paths are not
-present in your code base, and an enum is an excellent model for that. Although
-your code base may never run into certain cases, the runtime does not see the
-code as you mentally model it. It only has a limited view into your code to
-inspect and a list of optimizations it can do safely when certain conditions are
-satisfied.
+is used. The runtime has to either resolve the actual method to run, or resolve
+the type and then execute the concrete method, if it even is concrete to begin
+with. The key factor to keep in mind is how you can help the runtime eliminate
+which code paths are not present in your code base, and an enum is an excellent
+model for that. Although your code base may never run into certain cases, the
+runtime does not see the code as you mentally model it. It only has a limited
+view into your code to inspect and a list of optimizations it can do safely when
+certain conditions are satisfied.
 
 ### Improvements made in .NET 10
 
-I had initially done this test under .NET 8.0, which used to give the
-following results. You can clearly see the difference between the sealed and
-non-sealed types. Interestingly, matching on enums with non-sealed types with
+I had initially done this test under .NET 8.0, which gave the following results.
+You can clearly see the difference between the sealed and non-sealed types.
+Interestingly, matching on enums with non-sealed types with
 an enum is signigicantly slower than type matching on sealed types. The
 performance has improved all over the board between .NET versions.
 
@@ -241,12 +233,21 @@ performance has improved all over the board between .NET versions.
 
 ## Conclusions
 Comparing the results, when it comes to absolute raw performance, the clear
-winner is still the good old fashioned enum based matching method. However, when
-you factor in `sealed` types, the type matching switch expression which has many syntactic advantages and is easier to maintain overall becomes a very competitive option. The biggest
-takeaway here is that you should avoid virtual methods in performance critical
-code, which I believe is well known amongst the performance concious developers
-in the field. However, it would be ill-faithed to interpret our findings
-as an anti-OOP stance.
+winner is still the good old fashioned enum based matching method. When you
+factor in `sealed` types, the type matching switch expression which has many
+syntactic advantages and is easier to maintain overall becomes a very
+competitive option. The biggest takeaway here is that you should avoid virtual
+methods in performance critical code, which I believe is well known amongst the
+performance concious developers in the field. Please note that benchmarks like
+this should not be used to make architectural decisions unless it is absolutely
+necessary to improve the performance of a bottleneck.
+
+It is also important to highlight how little the performance of the event
+matching matters in the use case of OpenTK. In the constraint of a 16ms frame
+time budget (for 60fps), you can handle millions of events, meanwhile
+realistically you will recieve less 20 to 30 events at most under most
+circumstances. This experiement was more to satisfy my curiousity and i find
+the results surprisingly close between some test cases.
 
 I highly suggest reading the source code, as well as the assembly output of the
 benchmark code in SharpLab.io for further insights into this test, the results
@@ -256,4 +257,4 @@ discuss further improvements in the issue attached to this article.
 ## Further Reading
 * [Benchmark Source Code](https://github.com/utkumaden/OpenTK.EventDeliveryTest)
 * [Assembly At Sharplab.io](https://sharplab.io/#gist:b68760cb99a638c08d4d957497a28e1a)
-* [\[MSDN\] `sealed`](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/sealed)
+* [C# Language Reference: `sealed`](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/sealed)
