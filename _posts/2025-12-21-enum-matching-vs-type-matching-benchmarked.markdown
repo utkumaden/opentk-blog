@@ -163,7 +163,11 @@ With our test case, we have chosen to use 16 unique events with approximately
 32 million instances. However, feel free to extend our example to more event
 types and share the results with us on your own time.
 
+I strongly suggest you visit the source code at
+<https://github.com/utkumaden/OpenTK.EventDeliveryTest>.
+
 ## Testing and Results
+
 > <pre>
 > BenchmarkDotNet v0.15.8, Linux Fedora Linux 43 (Workstation Edition)
 > AMD Ryzen 7 8700G w/ Radeon 780M Graphics 2.91GHz, 1 CPU, 16 logical and 8 physical cores
