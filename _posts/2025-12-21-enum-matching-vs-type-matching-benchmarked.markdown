@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Enum Matching vs. Type Matching: Benchmarked"
-date: 2026-01-01 18:10:00 +0300
+date: 2026-01-01 22:10:00 +0300
 categories: development
 tags: benchmark performance enums types matching switch case comparison
 author: themixedupstuff
@@ -218,13 +218,12 @@ runtime does not see the code as you mentally model it. It only has a limited
 view into your code to inspect and a list of optimizations it can do safely when
 certain conditions are satisfied.
 
-### Improvements made in .NET 10
+### Comparison .NET 8.0 and likely older versions.
 
-I had initially done this test under .NET 8.0, which gave the following results.
-You can clearly see the difference between the sealed and non-sealed types.
-Interestingly, matching on enums with non-sealed types with
-an enum is signigicantly slower than type matching on sealed types. The
-performance has improved all over the board between .NET versions.
+When I started writing this blogpost, I tested in .NET 8.0. However, the .NET
+team works very hard to improve the performance of the generated code through
+the releases. Interestingly, matching on enums with non-sealed types is
+signigicantly slower than type matching on sealed types in the older version.
 
 > | Method                   | Mean     | Error   | StdDev  | Ratio | Allocated | Alloc Ratio |
 > |------------------------- |---------:|--------:|--------:|------:|----------:|------------:|
