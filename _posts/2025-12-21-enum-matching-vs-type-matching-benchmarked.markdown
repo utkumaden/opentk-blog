@@ -35,7 +35,7 @@ void OnEventRaised(PalHandle? handle, PlatformEventType type, EventArgs args)
 
 Whilst this approach is pretty conventional, we have to recognize that we are
 not writing pure C. The cleanest approach, in my opinion, would be to use a
-tagged union. However, tagged unions are not available as a language feature in
+tagged union, but, tagged unions are not available as a language feature in
 C#. The second cleanest approach would be to use the newer type matching
 features in C#.
 
@@ -54,9 +54,9 @@ void OnEventRaised(PalHandle? handle, PlatformEventType type, EventArgs args)
 
 Although window events should ideally never be a bottleneck in regular
 applications, this did raise a question of whichever approach is the fastest. I
-find the results will intrigue you as much as it did me. Whilst the findings
-aren't significant enough to affect our final decision, it might be important
-for someone else in another field or in another application.
+feel like the results will intrigue you as much as it did me. Whilst the
+findings aren't significant enough to affect our final decision, it might be
+important for someone else in another field or in another application.
 
 ## The Premise
 Imagine a scenario where you are receiving a significant number of events into
@@ -74,9 +74,12 @@ amount of time to process. This keeps the benchmark code cleaner overall.
 #### 1. Matching with an enum with a concrete member defined in the base type
 If there happen to be any seasoned C/C++ developers reading this, this is likely
 the approach you are most familiar with. Since these languages don't have any
-way to identify types at runtime, most codebases which require this behavior
+way to identify types at runtime[^1], most codebases which require this behavior
 have created their own tagged union type using `union` and `struct`, or perhaps
 using C++ inheritance with `class`.
+
+[^1]: assuming you don't use RTTI constructs like `typeid()` available in modern
+C++.
 
 ```cs
 enum MyEventType { Foo, Bar, Baz }
@@ -97,9 +100,9 @@ switch (args.Type)
 
 #### 2. Matching with an enum with a abstract/virtual member defined in the base type
 A more object oriented programming approach might be to introduce a virtual
-member instead of passing the value in a constructor. What if one wants to
-delegate the exact type of the event to a leaf class in the inheritance
-hierarchy without using a constructor every step of the way?
+member instead of passing the value in a constructor. The reasoning is simple:
+what if we want to delegate the exact type of the event to a class in the
+inheritance hierarchy without using a constructor every step of the way?
 
 ```cs
 abstract class MyEvent : EventArgs
@@ -110,7 +113,9 @@ abstract class MyEvent : EventArgs
 
 #### 3. Type Matching
 The final approach would be to use the newest language features with type
-matching in switch case statements.
+matching in switch case statements. This is probably the prettiest solution out
+of the bunch, and it is less prone to human error because there is no secondary
+language construct involved.
 
 ```cs
 class FooEventArgs : EventArgs {}
@@ -208,22 +213,28 @@ can guarantee that the types will be sealed, there is no need to mess around
 with writing an enum as it has very diminishing returns for applications without
 significant performance considerations.
 
-This is very easy to see when you consider the test cases where a virtual member
-is used. The runtime has to either resolve the actual method to run, or resolve
-the type and then execute the concrete method, if it even is concrete to begin
-with. The key factor to keep in mind is how you can help the runtime eliminate
-which code paths are not present in your code base, and an enum is an excellent
-model for that. Although your code base may never run into certain cases, the
-runtime does not see the code as you mentally model it. It only has a limited
-view into your code to inspect and a list of optimizations it can do safely when
-certain conditions are satisfied.
+The results are way clearer when you consider the test cases where a virtual
+member is used. The runtime has to either resolve the actual method to run, or
+resolve the type and then execute the concrete method, if it even is concrete to
+begin with. The key factor to keep in mind when writing any code is how can you 
+help the runtime eliminate which code paths are not possible in your code base,
+and an enum is an excellent model for that. Although your code base may never
+run into certain cases, the runtime does not see the code as you mentally model
+it. It only has a limited view into your code to inspect and a list of
+optimizations it can do safely when certain conditions are satisfied.
 
-### Comparison .NET 8.0 and likely older versions.
+A very close runner up, the type itself happens to be the second best option.
+Assuming the implementation of the type matching logic uses hash codes or a type
+id, each type is assigned a unique one. These hash codes, being integers, are
+incredibly fast to compare. If the type being matched is sealed, the code only
+has to compare one hash code. Otherwise, it will have to find all decendent
+types and compare their hash codes as well.
 
-When I started writing this blogpost, I tested in .NET 8.0. However, the .NET
-team works very hard to improve the performance of the generated code through
-the releases. Interestingly, matching on enums with non-sealed types is
-signigicantly slower than type matching on sealed types in the older version.
+### Performance for .NET 8.0 and likely older versions.
+When I started writing this blogpost, I tested in .NET 8.0. The .NET team works
+very hard to improve the performance of the generated code through the releases.
+Interestingly, matching on enums with non-sealed types is signigicantly slower
+than type matching on sealed types in the older version.
 
 > | Method                   | Mean     | Error   | StdDev  | Ratio | Allocated | Alloc Ratio |
 > |------------------------- |---------:|--------:|--------:|------:|----------:|------------:|
