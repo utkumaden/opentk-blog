@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Enum Matching vs. Type Matching: Benchmarked"
-date: 2026-01-03 21:50:00 +0300
+date: 2026-01-09 21:15:00 +0300
 categories: development
 tags: benchmark performance enums types matching switch case comparison
 author: themixedupstuff
@@ -62,10 +62,8 @@ a priority.
 ## The Premise
 Imagine a scenario where you are receiving a significant number of events into
 an event queue per second. Unfortunately for our poor program, it is very
-important that these events be handled as quickly as possible with a minimum
-amount of variance between the time it takes each event be processed. Each event
-has something to identify its type, and must be processed by different code
-paths.
+important that these events be handled as quickly as possible. Each event has
+something to identify its type, and must be processed by different code paths.
 
 For our premise, I will make each unique branch actually do the same work This
 keeps the benchmark code cleaner and is one less variable to account for.
@@ -202,11 +200,12 @@ The source used for the benchmarks can be found here:
 > </pre>
 
 As you can see in the results, using `sealed` on the types makes a huge
-difference in the performance. Doing so enables the additional optimizations
-such as devirtualization and inlining. It is also important to recognize that
-it is not always possible or beneficial to make types sealed, especially in a
-toolkit like OpenTK. It might be valuable to have a platform specific event
-structure which may have details specific to each driver.
+difference in the performance. Making the type sealed enables the compiler to
+generate code which is much more efficient at matching the type. It is also
+important to recognize that it is not always possible or beneficial to make
+types sealed, especially in a toolkit like OpenTK. It might be valuable to have
+a platform specific event structure which may have details specific to each
+driver.
 
 Although the non-sealed type matching syntax is somewhat slower, matching on
 types is significantly more advantageous to the human writing the code. If you
