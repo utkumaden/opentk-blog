@@ -32,7 +32,7 @@ layout: base
           </a>
         </h3>
         {%- if site.minima.show_excerpts -%}
-          {{ post.excerpt }}
+          {{ post.excerpt | markdownify | remove: '<p>' | remove: '</p>' }}
         {%- endif -%}
       </li>
       {%- endfor -%}
