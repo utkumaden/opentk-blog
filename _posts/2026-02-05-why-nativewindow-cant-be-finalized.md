@@ -9,6 +9,10 @@ commentIssueId: 11
 excerpt: "In this post we will look at why [`NativeWindow`](https://opentk.net/api/OpenTK.Windowing.Desktop.NativeWindow.html) can't be finalized."
 ---
 
+<div class="info-notice" markdown="1">
+The premise of this blog post is flawed as the post gives the impression that you *would* want to finalize a window. But this is in-fact a Bad Idea™. You don't want windows randomly staying around until the garbage collector decides it should finalize the window, that is a very weird user experience. Instead we can see the exception in the [`NativeWindow`](https://opentk.net/api/OpenTK.Windowing.Desktop.NativeWindow.html) finalizer as a kind of leak detection that tells you that you've forgotten to dispose it properly. So the perspective should be more, *why* does the [`NativeWindow`](https://opentk.net/api/OpenTK.Windowing.Desktop.NativeWindow.html) throw an exception if you don't properly dispose of it before it gets finalized.
+</div>
+
 In the [previous post]({% post_url 2025-12-28-why-does-glfwprovider-checkformainthread-exist %}) we looked at [`GLFWProvider.CheckForMainThread`](https://opentk.net/api/OpenTK.Windowing.Desktop.GLFWProvider.html#OpenTK_Windowing_Desktop_GLFWProvider_CheckForMainThread).
 There we concluded that most GLFW functions need to be called from the main thread.
 In this post we are going to look at a another consequence of that: [`NativeWindow`](https://opentk.net/api/OpenTK.Windowing.Desktop.NativeWindow.html) cannot be finalized.

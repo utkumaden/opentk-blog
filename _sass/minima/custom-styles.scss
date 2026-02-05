@@ -11,3 +11,26 @@ that minima uses by default (16px -> 14px) and assume this will work for larger 
 code.highlighter-rouge {
     font-size: 87.5% !important;
 }
+
+.info-notice {
+    border: 3px solid;
+    border-color: $info-notice-border-color;
+    border-radius: 6px;
+    padding: 8px;
+    margin-bottom: 15px;
+
+    background-color: $info-notice-bg-color;
+
+    
+
+    p {
+        margin-bottom: 0;
+        padding-left: 1em;
+    }
+}
+
+.info-notice::before {
+    content: "INFO: \A";
+    color: $info-notice-title-color;
+    font-weight: bold;
+}
